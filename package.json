@@ -1,0 +1,13 @@
+{
+  "config": {
+    "host": "REPLACE_ME"
+  },
+  "scripts": {
+    "clean": "rimraf ./output",
+    "parse": "node ./tools/parse-html.js ./src/ui/index.html $npm_package_config_host > ./output/html-doc.c",
+    "make": "mkdir -p ./output && npm run parse"
+  },
+  "dependencies": {
+    "rimraf": "^3.0.2"
+  }
+}

@@ -1,0 +1,115 @@
+:root {
+  --background-color: #F1EFE6;
+  --primary-color: #49564A;
+  --complementary-color: #FFF;
+  --device-color: #FFFFFF;
+  --device-border-radius: 15px;
+}
+
+@media screen and (max-width: 400px) {
+  html {
+    font-size: 12px;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  html {
+    font-size: 32px;
+  }
+
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--background-color);
+  color: var(--primary-color);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+div#light {
+  height: 2rem;
+  background-color: var(--device-color);
+  border-radius: 1rem;
+}
+
+div#light[data-is-active] {
+  box-shadow: 0rem 0rem 2rem #FACF2F;
+}
+
+body > div > div:first-child > div:last-child {
+  width: 24rem;
+  height: 16rem;  
+  display: flex;
+  justify-content: center;
+  background-image: url("../images/herbs.jpg");
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: contain;
+}
+
+body > div > div:first-child > div:last-child > div {
+  background-color: var(--device-color);
+  width: .75em;
+}
+
+div#container {
+  background-color: var(--device-color);
+  border-bottom-left-radius: var(--device-border-radius);
+  border-bottom-right-radius: var(--device-border-radius);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: .5rem;
+  padding: 2rem;
+}
+
+div#container[data-is-active] {
+  border-bottom: solid 0.25rem #688ad3;
+}
+
+div#container> div:nth-child(1),
+div#container> div:nth-child(3) {
+  text-align: center;
+  margin-bottom: .5rem;
+}
+
+div#container> div:nth-child(3) {
+  margin-top: 1rem;
+}
+
+div#container> div:nth-child(2),
+div#container> div:nth-child(4) {
+  display: flex;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+body > div > div:last-child {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.btn {  
+  background-color: var(--complementary-color);
+  color: var(--primary-color);
+  text-decoration: none;
+  border: solid var(--primary-color);
+  border-width: .01rem;
+  border-radius: 500rem;
+  border-color: var(--primary-color);
+  padding: .25rem .75rem;
+  min-width: 4rem;
+  text-align: center;
+  box-shadow: .25rem .25rem .5rem rgba(0, 0, 0, .15);
+}
+
+.btn[data-is-active],
+.active, .btn:hover {
+  background-color: var(--primary-color);
+  color: var(--complementary-color);
+}
+
