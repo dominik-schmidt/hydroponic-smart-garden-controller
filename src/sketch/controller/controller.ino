@@ -70,47 +70,43 @@ void loop() {
   }
  
   WiFiClient client = server.available();
-
   delay(1);  
   
-  if (!client) {
-    return;
+  // Based on https://arduino.stackexchange.com/questions/75494/esp8266-not-responding-after-random-intervals-of-time
+  if (client) {
+    delay(50);
+    if (client.available()) {
+      String request = client.readStringUntil('\r');
+      client.flush();
+    
+      // Control logic
+      if (request.indexOf("?scene=normal") != -1) {
+        setScene(SCENE_NORMAL);
+      } else if (request.indexOf("?scene=enjoy") != -1) {
+        setScene(SCENE_ENJOY);
+      } else if (request.indexOf("?scene=grow") != -1) {
+        setScene(SCENE_GROW);
+      } else if (request.indexOf("?mode=timer") != -1) {
+        mode = MODE_TIMER;
+      } else if (request.indexOf("?mode=on") != -1) {
+        mode = MODE_ON;
+      } else if (request.indexOf("?mode=off") != -1) {
+        mode = MODE_OFF;
+      }
+    
+      updateStatus();
+    
+      client.println("HTTP/1.1 200 OK");
+      client.println("Content-Type: text/html");
+      client.println("");
+    
+      htmlDoc(&client);
+      
+      delay(1);
+    
+      log("Client disonnected");
+    }
   }
-  log("Waiting for new client");
-
-  while(!client.available()) {
-    delay(1);
-  }
-
-  String request = client.readStringUntil('\r');
-  client.flush();
-
-  // Control logic
-  if (request.indexOf("?scene=normal") != -1) {
-    setScene(SCENE_NORMAL);
-  } else if (request.indexOf("?scene=enjoy") != -1) {
-    setScene(SCENE_ENJOY);
-  } else if (request.indexOf("?scene=grow") != -1) {
-    setScene(SCENE_GROW);
-  } else if (request.indexOf("?mode=timer") != -1) {
-    mode = MODE_TIMER;
-  } else if (request.indexOf("?mode=on") != -1) {
-    mode = MODE_ON;
-  } else if (request.indexOf("?mode=off") != -1) {
-    mode = MODE_OFF;
-  }
-
-  updateStatus();
-
-  client.println("HTTP/1.1 200 OK"); //
-  client.println("Content-Type: text/html");
-  client.println("");
-
-  htmlDoc(&client);
-  
-  delay(1);
-
-  log("Client disonnected");
 }
 
 void connectWifi() {
