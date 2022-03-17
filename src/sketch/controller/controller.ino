@@ -31,9 +31,15 @@ const int MODE_TIMER = 0;
 const int MODE_ON = 1;
 const int MODE_OFF = 2;
 
+// Determines pump behavior
+const int PUMP_MODE_AUTO = 0;
+const int PUMP_MODE_ON = 1;
+const int PUMP_MODE_OFF = 2;
+
 // Current scene and mode states
 int scene = SCENE_NORMAL;
-int mode = MODE_OFF;
+int mode = MODE_TIMER;
+int pumpMode = PUMP_MODE_AUTO;
 
 // Current lights and pump states
 int stateLights = OFF;
@@ -87,11 +93,17 @@ void loop() {
       } else if (request.indexOf("?scene=grow") != -1) {
         setScene(SCENE_GROW);
       } else if (request.indexOf("?mode=timer") != -1) {
-        mode = MODE_TIMER;
+        setMode(MODE_TIMER);
       } else if (request.indexOf("?mode=on") != -1) {
-        mode = MODE_ON;
+        setMode(MODE_ON);
       } else if (request.indexOf("?mode=off") != -1) {
-        mode = MODE_OFF;
+        setMode(MODE_OFF);
+      } else if (request.indexOf("?pump-mode=auto") != -1) {
+        setPumpMode(PUMP_MODE_AUTO);
+      } else if (request.indexOf("?pump-mode=on") != -1) {
+        setPumpMode(PUMP_MODE_ON);
+      } else if (request.indexOf("?pump-mode=off") != -1) {
+        setPumpMode(PUMP_MODE_OFF);
       }
     
       updateStatus();
@@ -164,7 +176,7 @@ void updateStatus() {
   int min = tm.tm_min;
   int hour = tm.tm_hour;
 
-  updatePump(min);
+  updatePump(pumpMode, min);
   updateLights(scene, mode, hour);
 
   log("Status updated.");
@@ -173,11 +185,21 @@ void updateStatus() {
 /*
  * Turns on or off pump based on current time.
  */
-void updatePump(int min) {
-  if (min > 29) {
-    turnOnPump();
-  } else {
-    turnOffPump();
+void updatePump(int mode, int min) {
+  switch (mode) {
+    case PUMP_MODE_AUTO:
+      if (min > 29) {
+        turnOnPump();
+      } else {
+        turnOffPump();
+      }
+      break;
+    case PUMP_MODE_ON:
+      turnOnPump();
+      break;
+    case PUMP_MODE_OFF:
+      turnOffPump();
+      break;
   }
 }
 
@@ -232,7 +254,15 @@ void setScene(int _scene) {
  */
 void setMode(int _mode) {
   mode = _mode;
-  log("Set mode.");
+  log("Set light mode.");
+}
+
+/* 
+ * Sets pump mode.
+ */
+void setPumpMode(int _mode) {
+  pumpMode = _mode;
+  log("Set pump mode.");
 }
 
 /*
@@ -307,6 +337,12 @@ void htmlButton(WiFiClient* client, char href[], char label[]) {
     isActive = true;
   } else if (href == "?mode=off" && mode == MODE_OFF) {
     isActive = true;
+  } else if (href == "?pump-mode=auto" && pumpMode == PUMP_MODE_AUTO) {
+    isActive = true;
+  } else if (href == "?pump-mode=on" && pumpMode == PUMP_MODE_ON) {
+    isActive = true;
+  } else if (href == "?pump-mode=off" && pumpMode == PUMP_MODE_OFF) {
+    isActive = true;
   } else {
     isActive = false;
   }
@@ -325,9 +361,9 @@ void htmlButton(WiFiClient* client, char href[], char label[]) {
 }
 
 /*
- * Outputs html light element (lamp shade).
+ * Outputs html light state element (lamp shade).
  */
-void htmlLight(WiFiClient* client) {
+void htmlLightState(WiFiClient* client) {
   if (stateLights == ON) {
     client->println("<div id='light' data-is-active></div>");
   } else {
@@ -336,9 +372,9 @@ void htmlLight(WiFiClient* client) {
 }
 
 /*
- * Outputs html pump element.
+ * Outputs html pump state element (blue border).
  */
-void htmlPump(WiFiClient* client) {
+void htmlPumpState(WiFiClient* client) {
   if (statePump == ON) {
     client->println("<div id='container' data-is-active>");
   } else {

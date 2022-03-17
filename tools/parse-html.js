@@ -13,9 +13,9 @@ fs.readFile(filename, 'utf8', function(err, data) {
     if (line.match(/.*<a.*class='btn'.*<\/a>/)) {
       return line.replace(/\s*<a.*href='(.*)'.*>(.*)<\/a>/, '  htmlButton(client, "$1", "$2");\n');
     } else if (line.match(/.*<div.*id='light'.*<\/div>.*/)) {
-      return '  htmlLight(client);\n';
+      return '  htmlLightState(client);\n';
     } else if (line.match(/.*<div.*id='container'.*>.*/)) {
-      return '  htmlPump(client);\n';
+      return '  htmlPumpState(client);\n';
     }else {
       return line.replace(/\s*(.+)/, '  client->println("$1");\n');
     }
