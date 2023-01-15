@@ -23,10 +23,9 @@ dedicated function calls to render dynamic states (e.g., for toggles). It also p
 stylesheet link to an external host (configured in [package.json](package.json)).
 
 The scenes (normal, grow, enjoy) replicate IDOO's original light and timing
-settings (but based on absolute clock times). If light mode is set to
-auto, these timing settings are used. If set to on or off, lights are permanently
-on or off. The pump alternates between on and off
-every 30 minutes. 
+settings (but are based on absolute clock times). If light mode is set to auto,
+these timing settings are used. If set to on or off, lights are permanently on
+or off. The pump turns on and off every 30 minutes if set to auto. 
 
 ![Web UI](doc/images/web-ui.png)
 
@@ -57,8 +56,7 @@ modification.
 
 ![Web UI](doc/images/hardware.jpg)
 
-This setup is in parts still a bit crude, but it works. It uses the original
-24V power supply and a DC-DC converter to power the ESP8266. In the picture,
-a NodeMCU board is connected via jumper cables, but this is supposed to be
-replaced by a smaller D1 Mini. Three MOSFETs (IRLZ 44N) are used to control
-LEDs (two colors) and pump.
+This setup is in parts still a bit crude, but it works. It uses the original 24V
+power supply and a DC-DC converter to power the ESP8266. Three MOSFETs (IRLZ
+44N) control LEDs (two colors: red and blue) and pump. Using a standard Ethernet
+cable between the main module and the custom connector allows for some flexibility.
